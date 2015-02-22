@@ -25,37 +25,43 @@ public class IJProgressView {
         // Blur Effect
         blurEffectView.frame = view.frame
         blurEffectView.center = view.center
+        blurEffectView.alpha = 0.0
         
-        progressView.frame = CGRectMake(0, 0, 80, 80)
-        progressView.center = view.center
-        progressView.backgroundColor = UIColor(hex: 0x444444, alpha: 0.7)
-        progressView.clipsToBounds = true
-        progressView.layer.cornerRadius = 10
+        // Vibrancy Effect
+        var vibrancyEffect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
+        var vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
+        vibrancyEffectView.frame = view.bounds
+        
+        // Label for vibrant text
+        var vibrantLabel = UILabel()
+        vibrantLabel.text = "Please wait"
+        vibrantLabel.font = UIFont.systemFontOfSize(24.0)
+        vibrantLabel.sizeToFit()
+        vibrantLabel.center = CGPoint(x: view.center.x, y: (view.center.y + 50))
+        // Add label to the vibrancy view
+        vibrancyEffectView.contentView.addSubview(vibrantLabel)
         
         activityIndicator.frame = CGRectMake(0, 0, 40, 40)
         activityIndicator.activityIndicatorViewStyle = .WhiteLarge
-        activityIndicator.center = CGPointMake(progressView.bounds.width / 2, progressView.bounds.height / 2)
+        activityIndicator.center = blurEffectView.center
         
-        progressView.addSubview(activityIndicator)
-        blurEffectView.contentView.addSubview(progressView)
+        blurEffectView.contentView.addSubview(activityIndicator)
+        blurEffectView.contentView.addSubview(vibrancyEffectView)
         
         view.addSubview(blurEffectView)
         activityIndicator.startAnimating()
+        
+        UIView.animateWithDuration(0.5, animations: {
+            self.blurEffectView.alpha = 1.0;
+        })
     }
     
     public func hideProgressView() {
-        activityIndicator.stopAnimating()
-        blurEffectView.removeFromSuperview()
-    }
-}
-
-extension UIColor {
-    
-    convenience init(hex: UInt32, alpha: CGFloat) {
-        let red = CGFloat((hex & 0xFF0000) >> 16)/256.0
-        let green = CGFloat((hex & 0xFF00) >> 8)/256.0
-        let blue = CGFloat(hex & 0xFF)/256.0
-        
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
+        UIView.animateWithDuration(0.5, animations: {
+            self.blurEffectView.alpha = 0.0;
+        }, completion: { (done) -> Void in
+            self.activityIndicator.stopAnimating()
+            self.blurEffectView.removeFromSuperview()
+        })
     }
 }
