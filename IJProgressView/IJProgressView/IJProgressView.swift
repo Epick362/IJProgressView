@@ -10,9 +10,9 @@ import UIKit
 
 public class IJProgressView {
     
-    var containerView = UIView()
     var progressView = UIView()
     var activityIndicator = UIActivityIndicatorView()
+    var blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
     
     public class var shared: IJProgressView {
         struct Static {
@@ -22,15 +22,9 @@ public class IJProgressView {
     }
     
     public func showProgressView(view: UIView) {
-        containerView.frame = view.frame
-        containerView.center = view.center
-        containerView.backgroundColor = UIColor.clearColor()
-        
         // Blur Effect
-        var blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
-        var blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = containerView.bounds
-        containerView.addSubview(blurEffectView)
+        blurEffectView.frame = view.frame
+        blurEffectView.center = view.center
         
         progressView.frame = CGRectMake(0, 0, 80, 80)
         progressView.center = view.center
@@ -45,16 +39,13 @@ public class IJProgressView {
         progressView.addSubview(activityIndicator)
         blurEffectView.contentView.addSubview(progressView)
         
-        
-        
-        view.addSubview(containerView)
-        
+        view.addSubview(blurEffectView)
         activityIndicator.startAnimating()
     }
     
     public func hideProgressView() {
         activityIndicator.stopAnimating()
-        containerView.removeFromSuperview()
+        blurEffectView.removeFromSuperview()
     }
 }
 
