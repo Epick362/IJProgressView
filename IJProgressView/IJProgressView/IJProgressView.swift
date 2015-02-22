@@ -24,7 +24,13 @@ public class IJProgressView {
     public func showProgressView(view: UIView) {
         containerView.frame = view.frame
         containerView.center = view.center
-        containerView.backgroundColor = UIColor(hex: 0xffffff, alpha: 0.3)
+        containerView.backgroundColor = UIColor.clearColor()
+        
+        // Blur Effect
+        var blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
+        var blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = containerView.bounds
+        containerView.addSubview(blurEffectView)
         
         progressView.frame = CGRectMake(0, 0, 80, 80)
         progressView.center = view.center
@@ -37,7 +43,10 @@ public class IJProgressView {
         activityIndicator.center = CGPointMake(progressView.bounds.width / 2, progressView.bounds.height / 2)
         
         progressView.addSubview(activityIndicator)
-        containerView.addSubview(progressView)
+        blurEffectView.contentView.addSubview(progressView)
+        
+        
+        
         view.addSubview(containerView)
         
         activityIndicator.startAnimating()
